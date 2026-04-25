@@ -1,0 +1,33 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+{% block extrahead %}
+{{ block.super }}
+<script>
+window.ADMIN_URL = "/{{ ADMIN_URL }}";
+(function(){
+  var root = document.documentElement;
+  // Force light theme
+  function forceLight() {
+    root.setAttribute('data-theme','light');
+    root.classList.remove('dark');
+  }
+  forceLight();
+  localStorage.setItem('__unfold_theme','light');
+  // Prevent Unfold JS from re-adding 'dark' class
+  new MutationObserver(function(mutations) {
+    for (var i = 0; i < mutations.length; i++) {
+      if (root.classList.contains('dark')) { forceLight(); break; }
+    }
+  }).observe(root, { attributes: true, attributeFilter: ['class'] });
+  // Timezone detection
+  var tz=Intl.DateTimeFormat().resolvedOptions().timeZone;
+  if(tz&&document.cookie.indexOf("browser_tz="+tz)===-1){document.cookie="browser_tz="+tz+";path=/;max-age=31536000;SameSite=Lax";}
+})();
+</script>
+{% endblock %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block branding %}
+    {% include "unfold/helpers/site_branding.html" %}
+{% endblock %}

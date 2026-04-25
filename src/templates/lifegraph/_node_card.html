@@ -1,0 +1,6 @@
+<article class="lg-node">
+  <time class="lg-node-time" datetime="{{ node.occurred_at|date:'c' }}">
+    {{ node.occurred_at|date:"Y-m-d H:i" }}
+  </time>
+  <p class="lg-node-text">{{ node.raw_text|linebreaksbr }}</p>
+</article>

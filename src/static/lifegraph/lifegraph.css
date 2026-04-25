@@ -1,0 +1,163 @@
+:root {
+  color-scheme: light;
+  --lg-bg: #f7f8f5;
+  --lg-surface: #ffffff;
+  --lg-text: #1f2933;
+  --lg-muted: #667085;
+  --lg-line: #d9dfd3;
+  --lg-accent: #176b5b;
+  --lg-accent-dark: #105044;
+  --lg-danger: #b42318;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--lg-bg);
+  color: var(--lg-text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  line-height: 1.5;
+}
+
+textarea,
+input,
+button {
+  font: inherit;
+}
+
+.lg-shell {
+  width: min(100%, 760px);
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.lg-composer {
+  padding: 12px 0 20px;
+}
+
+.lg-brand {
+  margin-bottom: 12px;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.lg-form {
+  background: var(--lg-surface);
+  border: 1px solid var(--lg-line);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.lg-field textarea,
+.lg-field input {
+  width: 100%;
+  border: 1px solid var(--lg-line);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--lg-text);
+}
+
+.lg-field textarea {
+  min-height: 104px;
+  padding: 12px;
+  resize: vertical;
+}
+
+.lg-field input {
+  min-height: 42px;
+  padding: 8px 10px;
+}
+
+.lg-form-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  margin-top: 10px;
+  align-items: start;
+}
+
+.lg-submit {
+  min-height: 42px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--lg-accent);
+  color: #fff;
+  cursor: pointer;
+}
+
+.lg-submit:hover,
+.lg-submit:focus {
+  background: var(--lg-accent-dark);
+}
+
+.lg-error {
+  margin-top: 6px;
+  color: var(--lg-danger);
+  font-size: 13px;
+}
+
+.lg-timeline {
+  display: grid;
+  gap: 10px;
+  padding-bottom: 32px;
+}
+
+.lg-node {
+  background: var(--lg-surface);
+  border: 1px solid var(--lg-line);
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.lg-node-time {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--lg-muted);
+  font-size: 13px;
+}
+
+.lg-node-text {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.lg-empty {
+  margin: 20px 0;
+  color: var(--lg-muted);
+}
+
+.lg-error-page {
+  min-height: 70vh;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 14px;
+}
+
+.lg-status {
+  font-size: 52px;
+  font-weight: 700;
+}
+
+.lg-home-link {
+  color: var(--lg-accent);
+}
+
+@media (max-width: 520px) {
+  .lg-shell {
+    padding: 12px;
+  }
+
+  .lg-form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .lg-submit {
+    width: 100%;
+  }
+}

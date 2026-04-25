@@ -1,0 +1,10 @@
+{% extends "lifegraph/base.html" %}
+
+{% block title %}{{ status_code }} · LifeGraph{% endblock %}
+
+{% block content %}
+  <section class="lg-error-page">
+    <div class="lg-status">{{ status_code }}</div>
+    <a class="lg-home-link" href="/">返回 LifeGraph</a>
+  </section>
+{% endblock %}

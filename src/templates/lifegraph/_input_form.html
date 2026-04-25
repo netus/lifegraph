@@ -1,0 +1,18 @@
+<form class="lg-form" method="post" action="/">
+  {% csrf_token %}
+  <div class="lg-field">
+    {{ form.raw_text }}
+    {% if form.raw_text.errors %}
+      <div class="lg-error">{{ form.raw_text.errors|striptags }}</div>
+    {% endif %}
+  </div>
+  <div class="lg-form-row">
+    <div class="lg-field lg-time-field">
+      {{ form.occurred_at }}
+      {% if form.occurred_at.errors %}
+        <div class="lg-error">{{ form.occurred_at.errors|striptags }}</div>
+      {% endif %}
+    </div>
+    <button class="lg-submit" type="submit">记录</button>
+  </div>
+</form>

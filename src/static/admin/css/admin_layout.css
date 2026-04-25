@@ -1,0 +1,91 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   Shared admin two-column layout
+   Classes: col-l (left) / col-r (right)
+   JS wraps adjacent col-l + col-r fieldsets into flex rows
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.col-row-wrapper {
+    display: flex;
+    gap: 3rem;
+    align-items: stretch;
+    width: 100%;
+}
+
+.col-row-wrapper > fieldset {
+    flex: 1 1 0;
+    min-width: 0;
+    /* stretch by default — shorter column extends its background to match
+       partner's height, avoiding large empty gaps next to bordered cards */
+}
+
+/* Allow right-column textareas to stretch to match left column height */
+.col-row-wrapper fieldset.col-r textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+/* Compact textarea — override Unfold's Tailwind min-height */
+textarea.textarea-sm {
+    height: 6rem !important;
+    min-height: 6rem !important;
+    max-height: 12rem !important;
+}
+
+/* Boolean switches 2-column grid (JS creates .switches-grid-inner) */
+.switches-grid-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem 2rem;
+}
+
+/* Generic 2-column field grid (pairs fields side by side) */
+.fields-2col-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.25rem 2rem;
+}
+
+/* Remove excess bottom spacing inside switches-grid fieldsets.
+   Unfold adds mb-4 / p-4 to inner containers — compress after the grid. */
+fieldset.switches-grid .switches-grid-inner > .mb-4:last-child {
+    margin-bottom: 0 !important;
+}
+fieldset.switches-grid .switches-grid-inner {
+    margin-bottom: 0;
+}
+
+/* Fieldset description 左右内边距，对齐 h2 标题与 form-rows 的 px-3 */
+fieldset.module > div.leading-relaxed {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+}
+
+/* Code-injection fieldsets (plain raw HTML/CSS/JS inputs).
+   Unfold DOM structure:
+     fieldset.module.code-inject
+       > h2 (title)
+       > div.leading-relaxed.max-w-4xl.text-sm   ← description
+       > div.form-rows (bordered container)
+         > div.field-row
+           > div.flex (px-3 flex row)
+             > div.lg:w-56 (label column)   ← HIDE, takes fixed width
+             > div.grow (textarea column) */
+fieldset.code-inject > div.leading-relaxed {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+}
+fieldset.code-inject .field-row > div.flex > div:first-child {
+    display: none !important;
+}
+fieldset.code-inject .field-row > div.flex {
+    padding: 0 !important;
+    border: 0 !important;
+}
+fieldset.code-inject textarea {
+    width: 100% !important;
+    min-height: 320px !important;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace !important;
+    font-size: 13px !important;
+    line-height: 1.5 !important;
+    resize: vertical;
+}

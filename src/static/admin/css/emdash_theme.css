@@ -1,0 +1,759 @@
+/* ==========================================================================
+   EmDash CMS Theme for Django Admin (Unfold Framework)
+   Light mode only — replicates EmDash's "classic" visual design.
+   ========================================================================== */
+
+/* ==========================================================================
+   0. Force Light Mode — disable dark mode entirely
+   ========================================================================== */
+
+/* Override any dark mode detection */
+html, html[data-theme="dark"], html[data-theme="auto"] {
+    color-scheme: light !important;
+}
+
+/* Hide all theme toggle controls */
+.theme-toggle,
+button[class*="theme"],
+[class*="ThemeToggle"],
+[x-data*="theme"] button[class*="material"] {
+    display: none !important;
+}
+
+/* Hide the Light/Dark/System switcher row in user popup */
+#nav-sidebar-inner > div:last-child nav > div:first-child {
+    display: none !important;
+}
+
+/* Force all Unfold dark: variants to use light colors */
+.dark body,
+.dark #content,
+.dark main,
+html[data-theme="dark"] body {
+    background-color: #f0f0f1 !important;
+    color: #1d2327 !important;
+}
+
+/* ==========================================================================
+   1. Design Tokens — EmDash Classic Light
+   ========================================================================== */
+
+:root, html, html[data-theme="dark"], html[data-theme="auto"] {
+    --primary: #2271b1;
+    --primary-fg: #ffffff;
+    --secondary: #135e96;
+
+    --body-fg: #1d2327;
+    --body-bg: #ffffff;
+    --body-quiet-color: #787c82;
+    --body-medium-color: #50575e;
+    --body-loud-color: #1d2327;
+
+    --link-fg: #2271b1;
+    --link-hover-color: #135e96;
+    --link-selected-fg: #135e96;
+
+    --border-color: #c3c4c7;
+    --hairline-color: #dcdcde;
+
+    --darkened-bg: #f0f0f1;
+    --selected-bg: #f0f0f1;
+    --selected-row: #e7f4fe;
+
+    --header-bg: #ffffff;
+    --header-link-color: #1d2327;
+
+    --breadcrumbs-fg: #50575e;
+    --breadcrumbs-bg: #ffffff;
+    --breadcrumbs-link-fg: #2271b1;
+
+    --error-fg: #d63638;
+    --message-success-bg: #edfaef;
+    --message-warning-bg: #fcf9e8;
+    --message-error-bg: #fcf0f1;
+
+    --close-button-bg: #dcdcde;
+    --close-button-hover-bg: #c3c4c7;
+
+    color-scheme: light !important;
+}
+
+/* ==========================================================================
+   2. Typography
+   ========================================================================== */
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
+    font-size: 14px !important;
+    color: #1d2327 !important;
+    background-color: #f0f0f1 !important;
+}
+
+a {
+    color: #2271b1;
+    transition: color 0.15s ease;
+}
+
+a:hover {
+    color: #135e96;
+}
+
+/* ==========================================================================
+   3. Sidebar — Permanently Dark (EmDash #1d2327)
+   ========================================================================== */
+
+#nav-sidebar,
+#nav-sidebar-inner,
+[id="nav-sidebar"] {
+    background-color: #1d2327 !important;
+    color: #fff !important;
+    border-color: rgba(255,255,255,0.08) !important;
+}
+
+/* Clear Unfold's bg-base-* classes inside sidebar (exclude user popup nav) */
+#nav-sidebar [class*="bg-base"]:not(nav):not(nav *),
+#nav-sidebar [class~="bg-white"]:not(nav):not(nav *),
+#nav-sidebar-inner,
+#nav-sidebar-inner [class*="bg-base"]:not(nav):not(nav *),
+#nav-sidebar-inner [class*="dark:bg-"]:not(nav):not(nav *) {
+    background-color: #1d2327 !important;
+}
+
+/* User popup nav — force light background */
+#nav-sidebar-inner > div:last-child nav {
+    background: #ffffff !important;
+    color: #1d2327 !important;
+}
+
+#nav-sidebar-inner > div:last-child nav a {
+    color: #1d2327 !important;
+    background-color: transparent !important;
+}
+
+#nav-sidebar-inner > div:last-child nav a:hover {
+    color: #2271b1 !important;
+    background: #f0f0f1 !important;
+}
+
+/* Unfold dark text overrides inside sidebar */
+#nav-sidebar [class*="dark:text-"],
+#nav-sidebar [class*="text-font-"],
+#nav-sidebar-inner [class*="dark:text-"],
+#nav-sidebar-inner [class*="text-font-"] {
+    color: rgba(255,255,255,0.7) !important;
+}
+
+/* --- Navigation links --- */
+#nav-sidebar-apps ol a {
+    color: rgba(255,255,255,0.7) !important;
+    transition: all 0.15s ease !important;
+    border-radius: 0.375rem !important;
+    height: 36px !important;
+    font-size: 13px !important;
+}
+
+#nav-sidebar-apps ol a:hover {
+    color: #fff !important;
+    background: rgba(255,255,255,0.08) !important;
+}
+
+#nav-sidebar-apps ol a.active {
+    background: #2271b1 !important;
+    color: #fff !important;
+    font-weight: 600 !important;
+}
+
+/* --- Navigation icons --- */
+#nav-sidebar-apps ol a .material-symbols-outlined {
+    color: rgba(255,255,255,0.5) !important;
+    font-size: 18px !important;
+}
+
+#nav-sidebar-apps ol a:hover .material-symbols-outlined {
+    color: rgba(255,255,255,0.85) !important;
+}
+
+#nav-sidebar-apps ol a.active .material-symbols-outlined {
+    color: #fff !important;
+}
+
+/* --- Group titles (section headers) --- */
+#nav-sidebar-apps > div > h2 {
+    font-size: 11px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.06em !important;
+    color: rgba(255,255,255,0.45) !important;
+    font-weight: 600 !important;
+}
+
+/* Group chevron icon */
+#nav-sidebar-apps > div > h2 .material-symbols-outlined {
+    color: rgba(255,255,255,0.3) !important;
+}
+
+#nav-sidebar-apps > div > h2:hover .material-symbols-outlined {
+    color: rgba(255,255,255,0.6) !important;
+}
+
+/* --- Separators --- */
+#nav-sidebar-apps hr {
+    border-color: rgba(255,255,255,0.06) !important;
+}
+
+/* --- Site switcher inside sidebar --- */
+#nav-sidebar-inner .site-switcher__select {
+    background-color: rgba(255,255,255,0.06) !important;
+    color: rgba(255,255,255,0.8) !important;
+    border-color: rgba(255,255,255,0.12) !important;
+}
+
+#nav-sidebar-inner .site-switcher__select:hover,
+#nav-sidebar-inner .site-switcher__select:focus {
+    border-color: rgba(255,255,255,0.25) !important;
+}
+
+/* --- Sidebar global overrides --- */
+/* Kill Unfold's purple focus ring inside sidebar */
+#nav-sidebar *,
+#nav-sidebar-inner * {
+    --tw-ring-color: transparent !important;
+    --tw-ring-shadow: 0 0 #0000 !important;
+    --tw-ring-offset-shadow: 0 0 #0000 !important;
+}
+
+/* Nav link icons */
+#nav-sidebar-apps ol a .material-symbols-outlined {
+    color: rgba(255,255,255,0.5) !important;
+}
+
+/* --- Bottom user menu fix --- */
+#nav-sidebar-inner > *:last-child,
+#nav-sidebar [class*="mt-auto"] {
+    position: relative;
+    z-index: 100;
+}
+
+/* User menu popover — force light theme and proper z-index */
+#nav-sidebar [x-show][class*="absolute"],
+#nav-sidebar [class*="mt-auto"] [x-show],
+#nav-sidebar-inner [x-show][class*="absolute"],
+#nav-sidebar-inner [class*="mt-auto"] [x-show] {
+    background: #ffffff !important;
+    color: #1d2327 !important;
+    border: 1px solid #c3c4c7 !important;
+    border-radius: 0.5rem !important;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15) !important;
+    z-index: 9999 !important;
+}
+
+/* Links inside user popover menu */
+#nav-sidebar [x-show][class*="absolute"] a,
+#nav-sidebar-inner [class*="mt-auto"] [x-show] a,
+#nav-sidebar-inner [x-show][class*="absolute"] a {
+    color: #1d2327 !important;
+}
+
+#nav-sidebar [x-show][class*="absolute"] a:hover,
+#nav-sidebar-inner [class*="mt-auto"] [x-show] a:hover,
+#nav-sidebar-inner [x-show][class*="absolute"] a:hover {
+    color: #2271b1 !important;
+    background: #f0f0f1 !important;
+}
+
+/* Text inside user popover */
+#nav-sidebar [x-show][class*="absolute"] span,
+#nav-sidebar [x-show][class*="absolute"] p,
+#nav-sidebar-inner [x-show][class*="absolute"] span,
+#nav-sidebar-inner [x-show][class*="absolute"] p {
+    color: #50575e !important;
+}
+
+/* Hide theme toggle inside user menu */
+#nav-sidebar [x-show] [class*="theme"],
+#nav-sidebar [x-show] button[class*="material-symbols"],
+#nav-sidebar-inner [x-show] [class*="theme"] {
+    display: none !important;
+}
+
+/* Sidebar scrollbar */
+#nav-sidebar ::-webkit-scrollbar { width: 6px; }
+#nav-sidebar ::-webkit-scrollbar-track { background: transparent; }
+#nav-sidebar ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 3px; }
+#nav-sidebar ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+/* ==========================================================================
+   4. Header — 64px, white, sticky
+   ========================================================================== */
+
+#header,
+header,
+header[class*="bg-"] {
+    min-height: 64px !important;
+    background: #ffffff !important;
+    border-bottom: 1px solid #c3c4c7 !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 40 !important;
+    color: #1d2327 !important;
+}
+
+#header a, header a {
+    color: #1d2327 !important;
+}
+#header a:hover, header a:hover {
+    color: #2271b1 !important;
+}
+
+/* Header icons/buttons */
+header .material-symbols-outlined {
+    color: #50575e !important;
+}
+
+/* ==========================================================================
+   5. Breadcrumbs
+   ========================================================================== */
+
+#breadcrumbs, .breadcrumbs, nav[aria-label="breadcrumbs"], div[class*="breadcrumb"] {
+    background: #ffffff !important;
+    color: #50575e !important;
+}
+
+#breadcrumbs a, .breadcrumbs a, nav[aria-label="breadcrumbs"] a {
+    color: #2271b1 !important;
+}
+
+/* ==========================================================================
+   6. Content Area — Elevated surface #f0f0f1
+   ========================================================================== */
+
+#content, #content-main, main {
+    background-color: #f0f0f1 !important;
+    color: #1d2327 !important;
+}
+
+/* ==========================================================================
+   7. Cards / Modules / Fieldsets — White surface
+   ========================================================================== */
+
+.module {
+    border-radius: 0.5rem !important;
+    border: 1px solid #c3c4c7 !important;
+    background: #ffffff !important;
+    overflow: hidden !important;
+    margin-bottom: 1rem !important;
+}
+/* Changelist module: no border (avoids action bar 2px offset) + visible overflow for sticky */
+#changelist.module {
+    border: none !important;
+    background: transparent !important;
+    border-radius: 0 !important;
+    overflow: visible !important;
+}
+
+.module h2, .module caption, fieldset h2 {
+    background: #f0f0f1 !important;
+    color: #1d2327 !important;
+    padding: 0.75rem 1rem !important;
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    border-bottom: 1px solid #c3c4c7 !important;
+    margin: 0 !important;
+}
+
+fieldset {
+    border-radius: 0.5rem !important;
+    border: 1px solid #c3c4c7 !important;
+    background: #ffffff !important;
+    margin-bottom: 1rem !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+}
+
+.form-row {
+    padding: 0.75rem 1rem !important;
+    border-bottom: 1px solid #dcdcde !important;
+}
+
+.form-row:last-child {
+    border-bottom: none !important;
+}
+
+.form-row label {
+    color: #1d2327 !important;
+    font-weight: 500 !important;
+    font-size: 0.8125rem !important;
+}
+
+.help, .form-row .help {
+    color: #787c82 !important;
+    font-size: 0.75rem !important;
+}
+
+/* ==========================================================================
+   8. Tables
+   ========================================================================== */
+
+#result_list, .results {
+    border-radius: 0.5rem !important;
+    border: 1px solid #c3c4c7 !important;
+    overflow: hidden !important;
+    background: #ffffff !important;
+}
+
+#result_list table, .results table {
+    width: 100% !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+}
+
+#result_list table thead th, .results table thead th {
+    background: #f0f0f1 !important;
+    padding: 0.75rem 1rem !important;
+    font-size: 0.8125rem !important;
+    font-weight: 500 !important;
+    color: #50575e !important;
+    border-bottom: 1px solid #c3c4c7 !important;
+}
+
+/* Reset tr border (Unfold adds border via Tailwind classes) */
+#result_list tbody tr,
+table.result-list tbody tr {
+    border: none !important;
+    margin: 0 !important;
+}
+
+/* Single bottom border only — Unfold uses border-separate so top+bottom = double line */
+#result_list td,
+#result_list th,
+table.result-list td,
+table.result-list th {
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    border-bottom: 1px solid #dcdcde !important;
+    padding: 0.75rem 1rem !important;
+    font-size: 0.875rem !important;
+    line-height: 1.5 !important;
+    color: #1d2327 !important;
+}
+
+/* Unfold changelist table — force consistent font size */
+main table td, main table th,
+#content table td, #content table th {
+    font-size: 0.875rem !important;
+}
+
+main table td a, #content table td a {
+    font-size: 0.875rem !important;
+    color: #2271b1 !important;
+}
+
+#result_list table tbody tr:last-child td { border-bottom: none !important; }
+
+#result_list table tbody tr:hover, .results table tbody tr:hover {
+    background: #f0f0f1 !important;
+}
+
+#result_list table tbody tr.selected { background: #e7f4fe !important; }
+
+#result_list table thead th a { color: #50575e !important; text-decoration: none !important; }
+#result_list table thead th.sorted { background: #e7f4fe !important; }
+#result_list table thead th.sorted a { color: #1d2327 !important; }
+
+/* ==========================================================================
+   9. Buttons
+   ========================================================================== */
+
+/* Primary submit (旧 Django admin legacy, 不包含 Unfold 的 <button type=submit>
+   因为 Unfold 的次要按钮 _continue/_addanother 也是 button[type=submit]，
+   会被误涂成蓝底白字/白底白字；让 Unfold 自带 Tailwind 样式处理） */
+input[type="submit"],
+.submit-row input[type="submit"], a.button,
+.btn-primary, input.default, .submit-row input.default {
+    background: #2271b1 !important;
+    color: #ffffff !important;
+    border-radius: 0.375rem !important;
+    padding: 0.5rem 1rem !important;
+    font-weight: 600 !important;
+    border: none !important;
+    cursor: pointer !important;
+    font-size: 0.875rem !important;
+    transition: background 0.15s ease !important;
+}
+
+input[type="submit"]:hover,
+.submit-row input[type="submit"]:hover, a.button:hover,
+.btn-primary:hover, input.default:hover, .submit-row input.default:hover {
+    background: #135e96 !important;
+    color: #ffffff !important;
+}
+
+/* Secondary buttons */
+.button, input[type="button"], .btn-secondary,
+.submit-row a.button, a.button.cancel-link, .cancel-link {
+    background: #ffffff !important;
+    color: #1d2327 !important;
+    border: 1px solid #c3c4c7 !important;
+    border-radius: 0.375rem !important;
+    padding: 0.5rem 1rem !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    font-size: 0.875rem !important;
+    transition: background 0.15s ease !important;
+}
+
+.button:hover, input[type="button"]:hover,
+.btn-secondary:hover, .submit-row a.button:hover {
+    background: #f0f0f1 !important;
+}
+
+/* Danger buttons */
+.deletelink, .btn-danger, input[type="submit"].deletelink, a.deletelink {
+    background: #d63638 !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 0.375rem !important;
+    padding: 0.5rem 1rem !important;
+    font-weight: 600 !important;
+}
+
+.deletelink:hover, .btn-danger:hover { background: #b32d2e !important; }
+
+/* ==========================================================================
+   10. Form Inputs
+   ========================================================================== */
+
+input[type="text"], input[type="password"], input[type="email"],
+input[type="url"], input[type="number"], input[type="tel"],
+input[type="search"], input[type="date"], input[type="datetime-local"],
+textarea, select {
+    border: 1px solid #c3c4c7 !important;
+    border-radius: 0.375rem !important;
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.875rem !important;
+    color: #1d2327 !important;
+    background-color: #ffffff !important;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+input[type="text"]:focus, input[type="password"]:focus,
+input[type="email"]:focus, input[type="url"]:focus,
+input[type="number"]:focus, input[type="search"]:focus,
+textarea:focus, select:focus {
+    border-color: #2271b1 !important;
+    box-shadow: 0 0 0 1px #2271b1 !important;
+    outline: none !important;
+}
+
+input::placeholder, textarea::placeholder {
+    color: #a7aaad !important;
+}
+
+input[type="radio"] {
+    accent-color: #2271b1 !important;
+}
+
+/* Admin list checkbox — specificity must beat [class*="bg-white"]:not(#id *):not(#id *) which is (0,2,1,0) */
+#changelist #result_list input[type="checkbox"]:checked,
+#content #changelist input.action-toggle:checked {
+    background-color: #2271b1 !important;
+    border-color: #2271b1 !important;
+}
+
+/* ==========================================================================
+   11. Messages
+   ========================================================================== */
+
+.messagelist li { border-radius: 0.5rem !important; padding: 0.75rem 1rem !important; margin-bottom: 0.5rem !important; font-size: 0.875rem !important; }
+.messagelist .success { background: #edfaef !important; color: #00a32a !important; border: 1px solid rgba(0,163,42,0.2) !important; }
+.messagelist .warning { background: #fcf9e8 !important; color: #dba617 !important; border: 1px solid rgba(219,166,23,0.2) !important; }
+.messagelist .error { background: #fcf0f1 !important; color: #d63638 !important; border: 1px solid rgba(214,54,56,0.2) !important; }
+.messagelist .info { background: #e7f4fe !important; color: #2271b1 !important; border: 1px solid rgba(34,113,177,0.2) !important; }
+
+/* ==========================================================================
+   12. Submit Row
+   ========================================================================== */
+
+.submit-row {
+    background: #f0f0f1 !important;
+    border: 1px solid #c3c4c7 !important;
+    border-radius: 0.5rem !important;
+    padding: 0.75rem 1rem !important;
+    display: flex !important;
+    gap: 0.5rem !important;
+    align-items: center !important;
+}
+
+/* ==========================================================================
+   13. Pagination / Filters / Inlines
+   ========================================================================== */
+
+.paginator { padding: 0.75rem 1rem !important; color: #787c82 !important; font-size: 0.8125rem !important; }
+.paginator a { color: #2271b1 !important; padding: 0.25rem 0.5rem !important; border-radius: 0.25rem !important; }
+.paginator a:hover { background: #f0f0f1 !important; }
+
+#changelist-filter { background: #ffffff !important; border: 1px solid #c3c4c7 !important; border-radius: 0.5rem !important; padding: 1rem !important; }
+#changelist-filter h2 { color: #1d2327 !important; font-size: 0.8125rem !important; font-weight: 600 !important; text-transform: uppercase !important; letter-spacing: 0.04em !important; }
+#changelist-filter h3 { color: #50575e !important; font-size: 0.8125rem !important; }
+#changelist-filter li.selected a { color: #2271b1 !important; font-weight: 600 !important; }
+
+.inline-related { border: 1px solid #c3c4c7 !important; border-radius: 0.5rem !important; margin-bottom: 1rem !important; overflow: hidden !important; }
+.inline-related h3 { background: #f0f0f1 !important; padding: 0.5rem 1rem !important; font-size: 0.8125rem !important; color: #1d2327 !important; border-bottom: 1px solid #c3c4c7 !important; }
+
+.errorlist li { color: #d63638 !important; }
+.errors input, .form-row.errors input { border-color: #d63638 !important; }
+
+/* ==========================================================================
+   14. Unfold-Specific Overrides — Force Light
+   ========================================================================== */
+
+/* Override ALL Unfold dark: background classes (exclude form controls) */
+[class*="dark:bg-base-900"]:not(input):not(select):not(textarea),
+[class*="dark:bg-base-950"]:not(input):not(select):not(textarea),
+[class*="dark:bg-base-800"]:not(input):not(select):not(textarea) {
+    background-color: inherit !important;
+}
+
+[class*="dark:text-"]:not(input):not(select):not(textarea) {
+    color: inherit !important;
+}
+
+[class*="dark:border-"]:not(input):not(select):not(textarea) {
+    border-color: inherit !important;
+}
+
+/* Override Unfold base backgrounds
+   用 [class~="..."] 精确匹配整个类名，避免误中 after:bg-white / checked:bg-white
+   等 Tailwind 伪类前缀变体（Unfold 的 toggle switch 有 after:bg-white） */
+[class~="bg-base-50"]:not(#nav-sidebar *):not(#nav-sidebar-inner *) {
+    background-color: #f0f0f1 !important;
+}
+
+[class~="bg-white"]:not(#nav-sidebar *):not(#nav-sidebar-inner *) {
+    background-color: #ffffff !important;
+}
+
+/* Override Unfold text */
+[class*="text-font-important-light"]:not(#nav-sidebar *),
+[class*="text-font-important-dark"]:not(#nav-sidebar *) {
+    color: #1d2327 !important;
+}
+
+[class*="text-font-default-dark"]:not(#nav-sidebar *) {
+    color: #1d2327 !important;
+}
+
+/* Unfold border overrides */
+[class*="border-base-200"]:not(#nav-sidebar *),
+[class*="border-base-800"]:not(#nav-sidebar *) {
+    border-color: #c3c4c7 !important;
+}
+
+/* Unfold primary color */
+[class*="bg-primary-600"], [class*="bg-primary-700"] {
+    background-color: #2271b1 !important;
+}
+[class*="text-primary-600"], [class*="text-primary-500"] {
+    color: #2271b1 !important;
+}
+
+/* ==========================================================================
+   15a. Sidebar Logo + Title
+   ========================================================================== */
+
+/* Logo container — the top bar holding icon + site name */
+#nav-sidebar-inner > div:first-child {
+    height: 72px !important;
+    margin-bottom: 1rem !important;
+    padding: 0 1.25rem !important;
+    border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+}
+
+/* Inner flex wrapper */
+#nav-sidebar-inner > div:first-child > div:first-child {
+    gap: 0.75rem !important;
+    height: 100% !important;
+    padding: 0 !important;
+}
+
+/* Logo image */
+#nav-sidebar-inner > div:first-child img {
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 8px !important;
+    object-fit: contain !important;
+    flex-shrink: 0 !important;
+    filter: drop-shadow(0 1px 4px rgba(0,0,0,0.3)) !important;
+}
+
+/* Site name text */
+#site-name a,
+#nav-sidebar-inner #site-name a {
+    color: #ffffff !important;
+    font-size: 1.125rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.02em !important;
+    text-decoration: none !important;
+    line-height: 1 !important;
+}
+
+#site-name a:hover {
+    color: rgba(255,255,255,0.85) !important;
+}
+
+/* ==========================================================================
+   15b. Sidebar Bottom User Area
+   ========================================================================== */
+
+/* User name */
+#nav-sidebar-inner > div:last-child .text-important,
+#nav-sidebar-inner > div:last-child .tracking-tight {
+    color: rgba(255,255,255,0.9) !important;
+}
+
+/* User email */
+#nav-sidebar-inner > div:last-child .text-subtle {
+    color: rgba(255,255,255,0.45) !important;
+}
+
+/* Expand icon */
+#nav-sidebar-inner > div:last-child .material-symbols-outlined {
+    color: rgba(255,255,255,0.35) !important;
+}
+
+/* Hover state for user area */
+#nav-sidebar-inner > div:last-child > div[x-on\:click]:hover {
+    background: rgba(255,255,255,0.06) !important;
+}
+
+/* ==========================================================================
+   15. Login Page
+   ========================================================================== */
+
+body.login, body.login #container {
+    background: #f0f0f1 !important;
+    color: #1d2327 !important;
+}
+
+body.login #content {
+    background: #ffffff !important;
+    border: 1px solid #c3c4c7 !important;
+    border-radius: 0.75rem !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
+}
+
+body.login #header {
+    background: transparent !important;
+    border: none !important;
+}
+
+/* ==========================================================================
+   16. Responsive
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    #nav-sidebar { z-index: 50 !important; }
+    #result_list table thead th { padding: 0.5rem 0.75rem !important; font-size: 0.75rem !important; }
+    #result_list table tbody td { padding: 0.5rem 0.75rem !important; font-size: 0.8125rem !important; }
+}

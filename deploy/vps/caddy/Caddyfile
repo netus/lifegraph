@@ -1,0 +1,52 @@
+{$APP_DOMAIN:localhost} {
+	tls /certs/cf-origin.pem /certs/cf-origin.key
+
+	encode zstd gzip
+
+	@static path /static/*
+
+	header @static {
+		Cache-Control "public, max-age=2592000, immutable"
+		defer
+	}
+
+	handle @static {
+		uri strip_prefix /static
+		root * /srv/staticfiles
+		file_server
+	}
+
+	# Media: serve uploaded LifeGraph files from disk when present.
+	handle /media/* {
+		root * /srv
+		@media_exists file {path}
+		handle @media_exists {
+			header Cache-Control "public, max-age=604800"
+			header defer
+			file_server
+		}
+		handle {
+			reverse_proxy lifegraph_web:8000 {
+				header_up Host {host}
+				header_up X-Forwarded-Host {host}
+				header_up X-Forwarded-Proto {scheme}
+			}
+		}
+	}
+
+	handle {
+		header {
+			-Server
+			X-Content-Type-Options "nosniff"
+			X-Frame-Options "DENY"
+			Referrer-Policy "same-origin"
+			Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+			Permissions-Policy "camera=(), microphone=(), geolocation=()"
+			Cross-Origin-Opener-Policy "same-origin"
+			Cross-Origin-Resource-Policy "same-site"
+		}
+		reverse_proxy lifegraph_web:8000 {
+			header_up X-Forwarded-Proto {scheme}
+		}
+	}
+}

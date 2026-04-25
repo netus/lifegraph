@@ -1,0 +1,113 @@
+{% load i18n %}
+{# Custom sidebar search — replaces Unfold's default search.html #}
+<div class="emdash-search" x-data="sidebarSearch()">
+    <input
+        type="text"
+        x-model="query"
+        x-on:input="search()"
+        x-on:focus="open = query.length > 0"
+        x-on:keydown.escape="open = false; query = ''"
+        x-on:keydown.arrow-down.prevent="moveDown()"
+        x-on:keydown.arrow-up.prevent="moveUp()"
+        x-on:keydown.enter.prevent="go()"
+        placeholder="{% trans 'Search...' %}"
+        class="emdash-search__input"
+        autocomplete="off"
+    />
+    <div class="emdash-search__results" x-show="open" x-cloak x-on:click.outside="open = false">
+        <template x-for="(item, idx) in results" :key="item.href">
+            <a :href="item.href"
+               class="emdash-search__item"
+               :class="{ 'is-active': idx === active }"
+               x-on:mouseenter="active = idx">
+                <span class="material-symbols-outlined emdash-search__icon" x-text="item.icon"></span>
+                <span x-text="item.title"></span>
+            </a>
+        </template>
+        <div class="emdash-search__empty" x-show="query.length > 0 && results.length === 0">
+            {% trans 'No results' %}
+        </div>
+    </div>
+</div>
+
+<style>
+.emdash-search { position: relative; margin: 0 0.75rem 0.5rem; }
+.emdash-search__input {
+    width: 100%; padding: 0.5rem 0.75rem;
+    background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.85);
+    border: 1px solid rgba(255,255,255,0.1); border-radius: 0.375rem;
+    font-size: 13px; outline: none; transition: border-color 0.15s;
+    box-sizing: border-box;
+}
+.emdash-search__input:focus { border-color: rgba(255,255,255,0.3); }
+.emdash-search__input::placeholder { color: rgba(255,255,255,0.35); }
+
+.emdash-search__results {
+    position: absolute; top: 100%; left: 0; right: 0; z-index: 100;
+    margin-top: 4px; padding: 4px;
+    background: #2c3338; border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 0.375rem; max-height: 280px; overflow-y: auto;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+.emdash-search__item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 0.4rem 0.6rem; border-radius: 4px;
+    color: rgba(255,255,255,0.7); font-size: 13px;
+    text-decoration: none; cursor: pointer; transition: background 0.1s;
+}
+.emdash-search__item:hover,
+.emdash-search__item.is-active {
+    background: rgba(255,255,255,0.1); color: #fff;
+}
+.emdash-search__icon { font-size: 16px !important; color: rgba(255,255,255,0.45); }
+.emdash-search__item.is-active .emdash-search__icon { color: rgba(255,255,255,0.7); }
+.emdash-search__empty {
+    padding: 0.6rem; text-align: center;
+    color: rgba(255,255,255,0.35); font-size: 12px;
+}
+</style>
+
+<script>
+document.addEventListener('alpine:init', () => {
+    Alpine.data('sidebarSearch', () => ({
+        query: '',
+        open: false,
+        active: 0,
+        results: [],
+        _items: null,
+
+        getItems() {
+            if (this._items) return this._items;
+            this._items = [];
+            document.querySelectorAll('#nav-sidebar-apps ol a').forEach(a => {
+                const icon = a.querySelector('.material-symbols-outlined')?.textContent?.trim() || '';
+                const spans = a.querySelectorAll('span:not(.material-symbols-outlined)');
+                let title = '';
+                spans.forEach(s => { title += s.textContent.trim() + ' '; });
+                title = title.trim() || a.textContent.replace(icon, '').trim();
+                const href = a.getAttribute('href');
+                if (href) this._items.push({ title, href, icon });
+            });
+            return this._items;
+        },
+
+        search() {
+            const q = this.query.trim().toLowerCase();
+            if (!q) { this.results = []; this.open = false; return; }
+            this.results = this.getItems().filter(item =>
+                item.title.toLowerCase().includes(q)
+            );
+            this.active = 0;
+            this.open = true;
+        },
+
+        moveDown() { if (this.active < this.results.length - 1) this.active++; },
+        moveUp()   { if (this.active > 0) this.active--; },
+        go() {
+            if (this.results[this.active]) {
+                window.location.href = this.results[this.active].href;
+            }
+        },
+    }));
+});
+</script>

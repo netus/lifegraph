@@ -1,0 +1,18 @@
+{% extends "lifegraph/base.html" %}
+
+{% block title %}LifeGraph{% endblock %}
+
+{% block content %}
+  <section class="lg-composer" aria-label="创建节点">
+    <div class="lg-brand">LifeGraph</div>
+    {% include "lifegraph/_input_form.html" %}
+  </section>
+
+  <section class="lg-timeline" aria-label="时间线">
+    {% for node in nodes %}
+      {% include "lifegraph/_node_card.html" with node=node %}
+    {% empty %}
+      <p class="lg-empty">还没有记录。</p>
+    {% endfor %}
+  </section>
+{% endblock %}

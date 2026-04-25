@@ -1,0 +1,25 @@
+# Local env
+.env
+.env.local
+deploy/vps/env/.env.lifegraph
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Django runtime
+src/staticfiles/
+src/media/
+src/data/
+src/backups/
+*.sqlite3
+backup.sql
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp

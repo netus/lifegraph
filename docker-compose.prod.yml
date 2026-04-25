@@ -1,0 +1,79 @@
+name: lifegraph_prod
+
+services:
+  lifegraph_db:
+    env_file:
+      - ${LIFEGRAPH_VPS_ENV_FILE:-deploy/vps/env/.env.lifegraph}
+
+  lifegraph_web:
+    build:
+      context: .
+      dockerfile: docker/django/Dockerfile
+      target: prod
+      args:
+        GIT_COMMIT: "${GIT_COMMIT:-}"
+    env_file:
+      - ${LIFEGRAPH_VPS_ENV_FILE:-deploy/vps/env/.env.lifegraph}
+    environment:
+      POSTGRES_HOST: lifegraph_db
+      POSTGRES_PORT: 5432
+      USE_REDIS_CACHE: ${USE_REDIS_CACHE:-true}
+    command:
+      [
+        "gunicorn",
+        "config.wsgi:application",
+        "--config",
+        "/app/gunicorn.conf.py",
+      ]
+    volumes:
+      - lifegraph_media_data:/app/media
+      - lifegraph_static_data:/app/staticfiles
+      - lifegraph_certs_data:/certs
+      - lifegraph_backup_data:/app/backups
+    expose:
+      - "8000"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "python -c \"import sys, urllib.request; resp = urllib.request.urlopen('http://127.0.0.1:8000/healthz', timeout=3); sys.exit(0 if resp.status == 200 else 1)\"",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 6
+      start_period: 20s
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    tmpfs:
+      - /tmp
+
+  lifegraph_proxy:
+    image: caddy:2.8-alpine
+    container_name: lifegraph_proxy
+    restart: unless-stopped
+    depends_on:
+      lifegraph_web:
+        condition: service_healthy
+    env_file:
+      - ${LIFEGRAPH_VPS_ENV_FILE:-deploy/vps/env/.env.lifegraph}
+    environment:
+      CADDY_ADMIN: ":2019"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deploy/vps/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - lifegraph_static_data:/srv/staticfiles:ro
+      - lifegraph_media_data:/srv/media:ro
+      - lifegraph_caddy_data:/data
+      - lifegraph_caddy_config:/config
+      - /etc/lifegraph/certs:/certs:ro
+    logging:
+      driver: json-file
+      options:
+        max-size: ${DOCKER_LOG_MAX_SIZE:-10m}
+        max-file: "${DOCKER_LOG_MAX_FILE:-5}"
+    networks:
+      - lifegraph_network
