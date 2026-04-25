@@ -2,12 +2,12 @@
 
 ## 强制：每次新会话
 
-1. 先读取项目根目录的 `notes.md`，这是核心规则文件
-2. 遵守 `notes.md` 中的所有指令和约定
+1. 先读取 `docs/conventions.md`，这是核心规则文件
+2. 遵守 `docs/conventions.md` 中的所有指令和约定
 
 ## 强制：每次提交代码时
 
-回顾本次改动是否涉及以下场景，如果涉及就同步更新 `notes.md`：
+回顾本次改动是否涉及以下场景，如果涉及就同步更新 `docs/conventions.md`：
 - 部署流程变化（Makefile、docker compose、entrypoint）
 - 新增重要系统特性（通知、定时任务、中间件）
 - 架构约定变化（admin mixin、URL 结构、字段规范）

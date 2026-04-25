@@ -1,178 +1,180 @@
 # LifeGraph
 
-把人生经历结构化为「时间 + 地点 + 人物 + 事件」节点，再把节点连成网络的 Django 系统。
+**English** · [简体中文](README.zh-CN.md)
 
-> 一个节点 = 一次真实经历。
-> 节点结构 = 三维坐标（时间 / 地点 / 参与者）+ 内容。
-> 本质：把人生变成可记录、可检索、可连接的数据。
+Turn life experiences into structured nodes — *when / where / who / what* — and weave them into a graph.
 
-完整产品定义见 [`first.md`](first.md)。
+> One node = one real experience.
+> Node structure = three coordinates (time / place / participants) + content.
+> Essence: turn life into recordable, searchable, connectable data.
 
----
-
-## 当前阶段
-
-阶段 1（单人节点系统）：
-
-- 极简输入：一句话写入一个节点
-- 时间线主视图（前台）
-- 后台节点 / 参与者管理（Django Admin + Unfold）
-- 多语言（zh-hans / en）
-- 后续规划：AI 自动结构化 → 多人节点 → 关系网络可视化
+Full product definition: [`docs/product.md`](docs/product.md) (Chinese).
 
 ---
 
-## 技术栈
+## Current Stage
 
-| 层 | 选型 |
+Stage 1 — single-user node system:
+
+- Minimal input: write a node in one sentence
+- Timeline as the main view (front end)
+- Node / participant management via Django Admin (Unfold theme)
+- i18n: zh-hans / en
+- Roadmap: AI auto-structuring → multi-user nodes → relationship graph visualization
+
+---
+
+## Tech Stack
+
+| Layer | Choice |
 | --- | --- |
 | Web | Django 5.x + Gunicorn |
 | DB | PostgreSQL 17 |
 | Cache / Session | Redis 7 |
 | Admin | django-unfold |
-| 定时任务 | django-apscheduler |
-| 反向代理 | Caddy 2.8（生产） |
-| 编排 | Docker Compose（base + override + prod 三文件） |
+| Scheduler | django-apscheduler |
+| Reverse proxy | Caddy 2.8 (production) |
+| Orchestration | Docker Compose (base + override + prod, three files) |
 
 ---
 
-## 目录结构
+## Layout
 
 ```
 .
-├── docker-compose.yml              # 基础服务定义
-├── docker-compose.override.yml     # 本地开发覆盖（自动加载）
-├── docker-compose.prod.yml         # 生产覆盖
-├── Makefile                        # 一键操作命令
+├── docker-compose.yml              # base service definitions
+├── docker-compose.override.yml     # local-dev overrides (auto-loaded)
+├── docker-compose.prod.yml         # production overrides
+├── Makefile                        # one-liner ops commands
 ├── docker/django/                  # Dockerfile / entrypoint / gunicorn
-├── deploy/vps/                     # Caddyfile + 生产环境变量示例
-├── requirements/                   # base / dev / prod 三套依赖
-├── scripts/                        # 本地初始化与自检脚本
+├── deploy/vps/                     # Caddyfile + production env example
+├── requirements/                   # base / dev / prod dependency sets
+├── scripts/                        # local bootstrap & self-check scripts
 └── src/
     ├── config/                     # Django settings / urls / wsgi / asgi
-    ├── core/                       # 中间件、Telegram、Turnstile、上传校验
-    ├── apps/lifegraph/             # 业务模型与视图
-    ├── templates/                  # 前台 + admin 模板
-    ├── static/                     # 手写静态资源
-    └── locale/                     # i18n 翻译
+    ├── core/                       # middleware, Telegram, Turnstile, upload validators
+    ├── apps/lifegraph/             # business models & views
+    ├── templates/                  # front-end + admin templates
+    ├── static/                     # hand-written static assets
+    └── locale/                     # i18n translations
 ```
 
 ---
 
-## 快速开始（本地开发）
+## Quick Start (local dev)
 
-需要：Docker Desktop。
+Prerequisites: Docker Desktop.
 
 ```bash
-# 1. 生成本地 .env（仅占位值，可直接跑）
+# 1. Bootstrap a local .env (placeholders only, ready to run)
 bash scripts/init_local_env.sh
 
-# 2. 起服务（db + redis + web）
+# 2. Bring up services (db + redis + web)
 make up
 
-# 3. 数据库迁移
+# 3. Run migrations
 make migrate
 
-# 4. 创建超级用户
+# 4. Create a superuser
 make createsuperuser
 ```
 
-访问：
+Visit:
 
-- 前台时间线：<http://localhost:28000/>
-- 后台：<http://localhost:28000/admin/>（路径由 `DJANGO_ADMIN_URL` 控制）
+- Front timeline: <http://localhost:28000/>
+- Admin: <http://localhost:28000/admin/> (path controlled by `DJANGO_ADMIN_URL`)
 
-常用命令：
+Common commands:
 
 ```bash
-make logs          # 看全部日志
-make logs-web      # 只看 Django
-make shell         # 进 web 容器
-make shell-db      # 进 Postgres 容器
-make down          # 停服务
-make reset         # 清数据卷重建
+make logs          # tail all logs
+make logs-web      # only Django
+make shell         # shell into web container
+make shell-db      # shell into Postgres
+make down          # stop services
+make reset         # wipe volumes & rebuild
 make check         # Django check --deploy
 ```
 
 ---
 
-## 生产部署
+## Production Deployment
 
-生产编排走 `docker-compose.yml + docker-compose.prod.yml`，由 Caddy 反代 Django。
+Production stack uses `docker-compose.yml + docker-compose.prod.yml`, with Caddy fronting Django.
 
-### 1. 准备 VPS 环境变量
+### 1. Prepare the VPS env file
 
 ```bash
 cp deploy/vps/env/.env.lifegraph.example deploy/vps/env/.env.lifegraph
-# 编辑填入真实的 SECRET_KEY / 数据库密码 / 域名 / ADMIN_URL 等
+# Fill in real SECRET_KEY / DB password / domain / ADMIN_URL / etc.
 ```
 
-需要填的关键字段：
+Required fields:
 
-| 变量 | 说明 |
+| Variable | Purpose |
 | --- | --- |
-| `DJANGO_SECRET_KEY` | 长随机串，必填 |
-| `DJANGO_DEBUG` | 生产固定 `false` |
-| `DJANGO_ALLOWED_HOSTS` | 你的域名，逗号分隔 |
-| `DJANGO_CSRF_TRUSTED_ORIGINS` | `https://example.com` 形式 |
-| `POSTGRES_PASSWORD` | 强密码 |
-| `APP_DOMAIN` | Caddy 提供服务的域名 |
-| `DJANGO_ADMIN_URL` | 自定义后台路径，避免默认 `/admin/` |
+| `DJANGO_SECRET_KEY` | Long random string, **mandatory** |
+| `DJANGO_DEBUG` | `false` in production |
+| `DJANGO_ALLOWED_HOSTS` | Your domain, comma-separated |
+| `DJANGO_CSRF_TRUSTED_ORIGINS` | `https://example.com` form |
+| `POSTGRES_PASSWORD` | Strong password |
+| `APP_DOMAIN` | Domain Caddy will serve |
+| `DJANGO_ADMIN_URL` | Custom admin path; avoid the default `/admin/` |
 
-### 2. 准备 TLS 证书
+### 2. TLS certificates
 
-Caddyfile 默认从 `/etc/lifegraph/certs/` 读取 Cloudflare Origin 证书：
+By default the Caddyfile reads Cloudflare Origin certs from `/etc/lifegraph/certs/`:
 
 ```
 /etc/lifegraph/certs/cf-origin.pem
 /etc/lifegraph/certs/cf-origin.key
 ```
 
-如不用 Cloudflare，可改 `deploy/vps/caddy/Caddyfile` 让 Caddy 自动签 Let's Encrypt。
+Not using Cloudflare? Edit `deploy/vps/caddy/Caddyfile` and let Caddy auto-issue Let's Encrypt certs.
 
-### 3. 一键部署
+### 3. One-shot deploy
 
 ```bash
 make prod-build
 ```
 
-该命令会：down 旧栈 → 重建镜像 → 起 db / redis / web / proxy。
+This brings the old stack down, rebuilds images, and restarts db / redis / web / proxy.
 
-部署成功后若配置了 `TELEGRAM_BOT_TOKEN` + `TELEGRAM_CHAT_ID`，`entrypoint.sh` 会推送一条部署通知。
-
----
-
-## 安全特性
-
-`src/core/middleware.py` 内置若干中间件，生产默认启用：
-
-- `TurnstileAdminLoginMiddleware` — 后台登录 Cloudflare Turnstile 验证
-- `SessionTimeoutMiddleware` — 会话超时
-- `RateLimitMiddleware` — 接口限流
-- `AdminNoCacheMiddleware` — 后台禁缓存
-- `SecurityHeadersMiddleware` — 安全响应头
-
-生产配置（`settings.py` 的 `if not DEBUG` 分支）会强制启用 HSTS / Secure Cookie / X-Frame-Options 等。
+If `TELEGRAM_BOT_TOKEN` + `TELEGRAM_CHAT_ID` are set, `entrypoint.sh` posts a deploy success notification to Telegram.
 
 ---
 
-## 数据备份与恢复
+## Security Features
+
+`src/core/middleware.py` ships several middlewares, enabled by default in production:
+
+- `TurnstileAdminLoginMiddleware` — Cloudflare Turnstile on admin login
+- `SessionTimeoutMiddleware` — session timeout enforcement
+- `RateLimitMiddleware` — per-endpoint rate limiting
+- `AdminNoCacheMiddleware` — no-cache for admin pages
+- `SecurityHeadersMiddleware` — extra security response headers
+
+The `if not DEBUG` branch in `settings.py` enforces HSTS / Secure cookies / X-Frame-Options / etc.
+
+---
+
+## Backup & Restore
 
 ```bash
-make backup-db                    # 导出到当前目录的 backup.sql
-make restore-db                   # 从 backup.sql 恢复
+make backup-db                    # dump to ./backup.sql
+make restore-db                   # restore from ./backup.sql
 ```
 
-生产环境的 `lifegraph_backup_data` 卷映射到容器内 `/app/backups/`，配合 `django-apscheduler` 可做定时备份。
+In production the `lifegraph_backup_data` volume maps to `/app/backups/` inside the container. Combine with `django-apscheduler` for scheduled backups.
 
 ---
 
-## 项目状态
+## Project Status
 
-本仓库目前**封存中**。后续何时复工不定，欢迎 fork 自用。
+This repo is currently **archived**. Future work timeline is undefined — feel free to fork.
 
 ---
 
 ## License
 
-未指定。如需复用请先与作者联系。
+See [LICENSE](LICENSE).
